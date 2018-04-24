@@ -1,5 +1,10 @@
 package com.deveire.dev.glexademo.SpeechIntents;
 
+import android.app.Activity;
+import android.content.Context;
+import android.widget.TextView;
+
+import com.deveire.dev.glexademo.R;
 import com.deveire.dev.glexademo.SpeechIntent;
 
 import java.util.ArrayList;
@@ -21,13 +26,15 @@ public class PingingForOtherTest extends SpeechIntent
         setResponses(responses);
     }
 
-    public String getOutput(String response)
+    @Override
+    public void getOutput(Context context, String keyword)
     {
-        switch (response)
+        TextView outputText = (TextView) ((Activity)context).findViewById(R.id.outputText);
+        switch (keyword)
         {
-            case "Down with this sort of thing": return "Down with this sort of thing";
-            case "Careful now": return "Careful now!";
-            default: return "What?";
+            case "Down with this sort of thing": outputText.setText("Down with this sort of thing"); break;
+            case "Careful now": outputText.setText("Careful now"); break;
+            default: outputText.setText("What? :" + keyword + " is not a keyword with an implimentation"); break;
         }
     }
 }

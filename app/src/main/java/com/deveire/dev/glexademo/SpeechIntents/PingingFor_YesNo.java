@@ -1,5 +1,10 @@
 package com.deveire.dev.glexademo.SpeechIntents;
 
+import android.app.Activity;
+import android.content.Context;
+import android.widget.TextView;
+
+import com.deveire.dev.glexademo.R;
 import com.deveire.dev.glexademo.SpeechIntent;
 
 import java.util.ArrayList;
@@ -21,13 +26,15 @@ public class PingingFor_YesNo extends SpeechIntent
         setResponses(responses);
     }
 
-    public String getOutput(String response)
+    @Override
+    public void getOutput(Context context, String keyword)
     {
-        switch (response)
+        TextView outputText = (TextView) ((Activity)context).findViewById(R.id.outputText);
+        switch (keyword)
         {
-            case "Yes": return "Yes";
-            case "No": return  "No";
-            default: return "WHAT! ERROR! THIS SHOULD'T HAPPEN!";
+            case "Yes": outputText.setText("Yes"); break;
+            case "No": outputText.setText("No"); break;
+            default: outputText.setText("What? :" + keyword + " is not a keyword with an implimentation"); break;
         }
     }
 }

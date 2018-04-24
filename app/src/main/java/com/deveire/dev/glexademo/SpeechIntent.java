@@ -1,5 +1,7 @@
 package com.deveire.dev.glexademo;
 
+import android.content.Context;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -13,6 +15,7 @@ public abstract class SpeechIntent
     private String name;
     private Map<String, ArrayList<String>> responses;
     private boolean isFillInIntent;
+    private String speechPrompt;
 
     public SpeechIntent(String name, boolean isFillInIntent)
     {
@@ -90,9 +93,18 @@ public abstract class SpeechIntent
 
     //Get Output intended for returning the string of Speech output only, any ui alterations must be done in the activity calling getOutput
     // and not in the getOutput method itself
-    public String getOutput(String keyword)
+    public void getOutput(Context context, String keyword)
     {
-        return "-Placeholder getOutput. You should not be seeing this-";
+       //"-Placeholder getOutput. You should not be seeing this-";
     }
 
+    public String getSpeechPrompt()
+    {
+        return speechPrompt;
+    }
+
+    public void setSpeechPrompt(String speechPrompt)
+    {
+        this.speechPrompt = speechPrompt;
+    }
 }

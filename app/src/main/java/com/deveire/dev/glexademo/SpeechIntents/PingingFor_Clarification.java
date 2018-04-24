@@ -1,5 +1,6 @@
 package com.deveire.dev.glexademo.SpeechIntents;
 
+import android.content.Context;
 import android.util.Log;
 
 import com.deveire.dev.glexademo.SpeechIntent;
@@ -31,11 +32,11 @@ public class PingingFor_Clarification extends SpeechIntent
         Log.i("WARNING:", "PingingFor_Clarification() should only be used to get the name of PingingFor-Clarification");
     }
 
-    public String getOutput(String response)
+    public void getOutput(Context context, String response)
     {
         switch (response)
         {
-            default: return "WHAT! ERROR! You shouldn't call this, this is Clarification, you should define output outside of this Intent!";
+            default: Log.e("Output","WHAT! ERROR! You shouldn't call this, this is Clarification, you should define output outside of this Intent!");
         }
     }
 
