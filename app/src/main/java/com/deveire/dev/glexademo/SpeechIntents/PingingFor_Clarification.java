@@ -18,6 +18,21 @@ public class PingingFor_Clarification extends SpeechIntent
     {
         super("PingingFor_Clarification");
         setFillInIntent(false);
+        String prompt = "I'm sorry but did you mean. ";
+        boolean isFirstPrompt = true;
+        for (String aKeyword: keywordsToDecideOn)
+        {
+            if(isFirstPrompt)
+            {
+                prompt += aKeyword;
+                isFirstPrompt = false;
+            }
+            else
+            {
+                prompt += " or. " + aKeyword;
+            }
+        }
+        setSpeechPrompt(prompt);
         HashMap<String, ArrayList<String>> responses = new HashMap<>();
         for (String aKeyword: keywordsToDecideOn)
         {

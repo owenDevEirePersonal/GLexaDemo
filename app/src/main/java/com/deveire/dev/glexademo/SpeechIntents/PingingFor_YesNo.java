@@ -20,6 +20,7 @@ public class PingingFor_YesNo extends SpeechIntent
     {
         super("PingingFor_YesNo");
         setFillInIntent(false);
+        setSpeechPrompt("You really should define this and not use the default one for this particular Speech Intent, you that know right?");
         HashMap<String, ArrayList<String>> responses = new HashMap<>();
         responses.put("Yes", SpeechIntent.compileSynonyms(new String[]{"ok", "yes", "okay", "correct"}));
         responses.put("No", SpeechIntent.compileSynonyms(new String[]{"no", "false", "incorrect", "not okay"}));

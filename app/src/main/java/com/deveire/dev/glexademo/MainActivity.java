@@ -68,7 +68,7 @@ public class MainActivity extends Activity implements RecognitionListener
             @Override
             public void onClick(View v)
             {
-                startDialog(pingingForTest);
+                startDialog(pingingForOtherTest);
             }
         });
 
@@ -107,51 +107,7 @@ public class MainActivity extends Activity implements RecognitionListener
         };
         recogDefibulatorTimer.schedule(recogDefibulatorTask, 0, 4000);*/
 
-
-
         setupTextToSpeech();
-        /*toSpeech = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
-            @Override
-            public void onInit(int status)
-            {
-                Log.i("Text To Speech Update", "onInit Complete");
-                toSpeech.setLanguage(Locale.ENGLISH);
-                endOfSpeakIndentifier = new HashMap();
-                endOfSpeakIndentifier.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "endOfSpeech");
-                toSpeech.setOnUtteranceProgressListener(new UtteranceProgressListener()
-                {
-                    @Override
-                    public void onStart(String utteranceId)
-                    {
-                        Log.i("Speech", "onStart called");
-                    }
-
-                    @Override
-                    public void onDone(String utteranceId)
-                    {
-                        Log.i("Speech", utteranceId + " DONE!");
-                        if (utteranceId.matches(pingingForTest.getName()))
-                        {
-                            runOnUiThread(new Runnable()
-                            {
-                                @Override
-                                public void run()
-                                {
-                                    startRecogListening(pingingForTest);
-                                }
-                            });
-                        }
-                        //toSpeech.shutdown();
-                    }
-
-                    @Override
-                    public void onError(String utteranceId)
-                    {
-                        Log.i("Speech", "ERROR DETECTED");
-                    }
-                });
-            }
-        });*/
     }
 
     @Override
@@ -410,7 +366,7 @@ public class MainActivity extends Activity implements RecognitionListener
             Log.i("Output", "about to start pinging for Clarification with: " + possibleKeywords.toString());
             debugText.setText("filterThroughClarification for clarification: Did you mean? " + possibleKeywords.toString() );
             previousPingingRecogFor = pingingFor;
-            startRecogListening(new PingingFor_Clarification(possibleKeywords));
+            startDialog(new PingingFor_Clarification(possibleKeywords));
         }
         else if(possibleKeywords.size() == 1)
         {
@@ -449,8 +405,9 @@ public class MainActivity extends Activity implements RecognitionListener
 //++++++[Text To Speech Code]
     public void startDialog(SpeechIntent intent)
     {
+        pingingRecogFor = intent;
         Log.i("Speech", "Starting Dialog with textToSpeech for intent: " + intent.getName());
-        toSpeech.speak(pingingForTest.getSpeechPrompt(), TextToSpeech.QUEUE_FLUSH, null, pingingForTest.getName());
+        toSpeech.speak(pingingRecogFor.getSpeechPrompt(), TextToSpeech.QUEUE_FLUSH, null, pingingRecogFor.getName());
     }
 
     private void setupTextToSpeech()
@@ -476,16 +433,31 @@ public class MainActivity extends Activity implements RecognitionListener
                     public void onDone(String utteranceId)
                     {
                         Log.i("Speech", utteranceId + " DONE!");
-                        if (utteranceId.matches(pingingForTest.getName()))
+                        if (utteranceId.matches(pingingForTest.getName()) || utteranceId.matches(pingingForOtherTest.getName()))
                         {
                             runOnUiThread(new Runnable()
                             {
                                 @Override
                                 public void run()
                                 {
-                                    startRecogListening(pingingForTest);
+                                    startRecogListening(pingingRecogFor);
                                 }
                             });
+                        }
+                        else if(utteranceId.matches(new PingingFor_Clarification().getName()))
+                        {
+                            runOnUiThread(new Runnable()
+                            {
+                                @Override
+                                public void run()
+                                {
+                                    startRecogListening(pingingRecogFor);
+                                }
+                            });
+                        }
+                        else
+                        {
+                            Log.e("Speech", "Unrecognised utteranceID");
                         }
                         //TODO: Add calls to startRecogListening for each SpeechIntent
                         //toSpeech.shutdown();

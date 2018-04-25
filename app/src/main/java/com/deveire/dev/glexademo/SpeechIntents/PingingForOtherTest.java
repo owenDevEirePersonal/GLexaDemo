@@ -20,6 +20,7 @@ public class PingingForOtherTest extends SpeechIntent
     {
         super("PingingForOtherTest");
         setFillInIntent(false);
+        setSpeechPrompt("What are your thoughts on Craggy island?");
         HashMap<String, ArrayList<String>> responses = new HashMap<>();
         responses.put("Down with this sort of thing", SpeechIntent.compileSynonyms(new String[]{"enough", "down", "no more"}));
         responses.put("Careful now", SpeechIntent.compileSynonyms(new String[]{"careful", "easy", "be careful"}));
