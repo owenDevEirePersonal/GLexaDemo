@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import com.deveire.dev.glexademo.SpeechIntents.PingingForOtherTest;
 import com.deveire.dev.glexademo.SpeechIntents.PingingForTest;
+import com.deveire.dev.glexademo.SpeechIntents.PingingForTestFill;
 import com.deveire.dev.glexademo.SpeechIntents.PingingFor_Clarification;
 
 import java.util.ArrayList;
@@ -24,6 +25,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.regex.Matcher;
 
 public class MainActivity extends Activity implements RecognitionListener
 {
@@ -39,6 +41,7 @@ public class MainActivity extends Activity implements RecognitionListener
 
     private final PingingForTest pingingForTest = new PingingForTest();
     private final PingingForOtherTest pingingForOtherTest = new PingingForOtherTest();
+    private final PingingForTestFill pingingForTestFill = new PingingForTestFill();
 
 
     //[Experimental Recog instantly stopping BugFix Variables]
@@ -68,7 +71,7 @@ public class MainActivity extends Activity implements RecognitionListener
             @Override
             public void onClick(View v)
             {
-                startDialog(pingingForOtherTest);
+                startDialog(pingingForTest);
             }
         });
 
@@ -240,7 +243,27 @@ public class MainActivity extends Activity implements RecognitionListener
         }
         else
         {
-            filterThroughClarification(matches, pingingRecogFor);
+            if(pingingRecogFor.isFillInIntent())
+            {
+                fillResponse(matches, pingingRecogFor);
+                prepareResponseFor(matches.get(0), pingingRecogFor);
+            }
+            else
+            {
+                filterThroughClarification(matches, pingingRecogFor);
+            }
+        }
+    }
+
+    private void fillResponse(ArrayList<String> results, SpeechIntent pingingFor)
+    {
+        if(results.size() > 0)
+        {
+            prepareResponseFor(results.get(0), pingingFor);
+        }
+        else
+        {
+            Log.e("Output", "Error, fillResponse got no results");
         }
     }
 
@@ -393,6 +416,10 @@ public class MainActivity extends Activity implements RecognitionListener
         {
             pingingFor.getOutput(this, result);
         }
+        else if (pingingFor.getName().matches(pingingForTestFill.getName()))
+        {
+            outputText.setText("Tea will be delivered to " + result);
+        }
         else
         {
             Log.e("Response:", "No response setup for this intent: " + pingingFor.getName());
@@ -433,7 +460,7 @@ public class MainActivity extends Activity implements RecognitionListener
                     public void onDone(String utteranceId)
                     {
                         Log.i("Speech", utteranceId + " DONE!");
-                        if (utteranceId.matches(pingingForTest.getName()) || utteranceId.matches(pingingForOtherTest.getName()))
+                        if (utteranceId.matches(pingingForTest.getName()) || utteranceId.matches(pingingForOtherTest.getName()) || utteranceId.matches(pingingForTestFill.getName()))
                         {
                             runOnUiThread(new Runnable()
                             {
